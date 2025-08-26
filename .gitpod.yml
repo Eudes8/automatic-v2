@@ -1,0 +1,25 @@
+tasks:
+  - name: Setup and Run
+    init: |
+      # Install dependencies
+      npm install
+      # Configure PostgreSQL
+      pg_ctl -D $PGDATA -l postgres.log start
+      createdb -U gitpod automatic || true
+    command: |
+      # Run database migrations
+      npx prisma migrate dev --name init
+      # Start the development server
+      npm run dev
+
+ports:
+  - port: 5432
+    onOpen: ignore
+  - port: 3000
+    onOpen: open-browser
+
+vscode:
+  extensions:
+    - dbaeumer.vscode-eslint
+    - bradlc.vscode-tailwindcss
+    - prisma.prisma
