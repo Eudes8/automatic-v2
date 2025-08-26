@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+model User {
+  id             String    @id @default(cuid())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  email          String    @unique
+  name           String?
+  hashedPassword String
+  role           Role      @default(CLIENT)
+
+  projectsAsClient Project[] @relation("ClientProjects")
+  sentMessages     Message[] @relation("SentMessages")
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  name        String
+  description String?
+
+  clientId    String
+  client      User      @relation("ClientProjects", fields: [clientId], references: [id])
+
+  messages    Message[]
+}
+
+model Message {
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  body        String       @db.Text
+
+  projectId   String
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  senderId    String
+  sender      User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+
+  attachments Attachment[]
+}
+
+model Attachment {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  filename    String
+  url         String
+
+  messageId   String
+  message     Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+}
