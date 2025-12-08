@@ -1,0 +1,79 @@
+{
+  "navbar": {
+    "dashboard": "Dashboard",
+    "messages": "Messages",
+    "files": "Files",
+    "services": "Services",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Ship your digital product faster",
+    "subtitle": "We design, build and deploy bespoke web and mobile applications."
+  },
+  "services": {
+    "title": "Our Services",
+    "description": "Design, Development, AI & Maintenance — tailored offerings for every need."
+  },
+  "footer": {
+    "about": "About",
+    "privacy": "Privacy Policy",
+    "terms": "Legal",
+    "copyright": "© AUTOMATIC. All rights reserved."
+  },
+  "footer_more": {
+    "description": "The leading reference for bespoke software development. We turn your ideas into exceptional digital products.",
+    "newsletter_title": "Stay up to date with our latest news",
+    "newsletter_description": "Subscribe to our newsletter to receive our latest articles and announcements.",
+    "newsletter_placeholder": "Your email address",
+    "newsletter_subscribe": "Subscribe"
+  },
+  "messages": {
+    "selectConversation": "Select a conversation",
+    "chooseToStart": "Choose a conversation to start chatting with the team."
+  }
+  ,
+  "nav": {
+    "services": "Services",
+    "processus": "Process",
+    "tarifs": "Pricing",
+    "ressources": "Resources",
+    "connexion": "Sign in",
+    "demarrer": "Start a project"
+  },
+  "services_list": {
+    "web": {
+      "title": "Web Applications",
+      "description": "Modern, high-performance web solutions"
+    },
+    "mobile": {
+      "title": "Mobile Applications",
+      "description": "Native iOS and Android apps"
+    },
+    "saas": {
+      "title": "SaaS Platforms",
+      "description": "Scalable cloud solutions"
+    },
+    "ai": {
+      "title": "Artificial Intelligence",
+      "description": "Custom AI solutions"
+    }
+  }
+  ,
+  "processus": {
+    "title": "Our Process",
+    "description": "A clear, collaborative process to turn your idea into a shipped product."
+  },
+  "tarifs": {
+    "title": "Pricing",
+    "description": "Plans and estimates to suit different needs and budgets.",
+    "tiers": {
+      "starter": { "title": "Starter", "price": "From €5,000" },
+      "business": { "title": "Business", "price": "From €15,000" },
+      "enterprise": { "title": "Enterprise", "price": "Custom" }
+    }
+  },
+  "ressources": {
+    "title": "Resources Hub",
+    "description": "Articles, guides and case studies to help you design and run your projects."
+  }
+}

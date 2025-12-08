@@ -1,67 +1,181 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+// Models for AUTOMATIC platform
 
-enum Role {
-  ADMIN
-  CLIENT
+/// Client representant une entreprise ou personne utilisant la plateforme
+model Client {
+  id           String   @id @default(cuid())
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @db.VarChar(255)
+  company      String   @db.VarChar(255)
+  contactName  String   @db.VarChar(255)
+  phone        String   @db.VarChar(20)
+  country      String   @db.VarChar(50)
+  website      String?  @db.VarChar(255)
+  status       String   @default("active") @db.VarChar(50) /// active, inactive, suspended
+  
+  // Relations
+  proposals    Proposal[]
+  contracts    Contract[]
+  projects     Project[]
+  messages     Message[]   /// messages envoyés par ce client
+  invoices     Invoice[]
+  payments     Payment[]
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  lastLogin    DateTime?
 }
 
+/// Utilisateur (peut être admin, support, ou contractor)
 model User {
-  id             String    @id @default(cuid())
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  email          String    @unique
-  name           String?
-  hashedPassword String
-  role           Role      @default(CLIENT)
-
-  projectsAsClient Project[] @relation("ClientProjects")
-  sentMessages     Message[] @relation("SentMessages")
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("user") @db.VarChar(50) /// admin, manager, developer, support, contractor
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Project {
-  id          String    @id @default(cuid())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  name        String
-  description String?
+model Proposal {
+  id             String   @id @default(cuid())
+  clientId       String?  /// Lié au client si créé via l'espace client
+  projectName    String   @db.VarChar(255)
+  company        String   @db.VarChar(255)
+  email          String   @db.VarChar(255)
+  phone          String   @db.VarChar(20)
+  description    String   @db.Text
+  projectType    String   @db.VarChar(50)
+  price          Int      /// Prix en centimes (ex: 50000 = 500€)
+  timeline       String   @db.VarChar(100)
+  features       String[]
+  onboardingStep Int      @default(0) /// 0: init, 1: info, 2: projet, 3: conditions, 4: signature, 5: paiement, 6: completed
+  status         String   @default("pending") @db.VarChar(50) /// pending, in_progress, signed, completed
+  createdAt      DateTime @default(now())
+  validUntil     DateTime
+  updatedAt      DateTime @updatedAt
 
-  clientId    String
-  client      User      @relation("ClientProjects", fields: [clientId], references: [id])
+  client    Client?     @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  contract  Contract?
+  project   Project?
+}
 
-  messages    Message[]
+model Contract {
+  id          String   @id @default(cuid())
+  proposalId  String   @unique
+  clientId    String?  /// Lié au client qui a signé
+  title       String   @db.VarChar(255)
+  clientInfo  Json     /// { company, contact, email, phone, address }
+  projectInfo Json     /// { name, description, price, timeline, features }
+  terms       Json     /// { deliverables, paymentSchedule, responsibilities }
+  signature   Json?    /// { name, title, date, image }
+  status      String   @default("generated") @db.VarChar(50) /// generated, signed, completed
+  createdAt   DateTime @default(now())
+  validUntil  DateTime
+  updatedAt   DateTime @updatedAt
+
+  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  client      Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  invoices    Invoice[]
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  title     String
+  type      String
+  createdAt DateTime @default(now())
+  messages  Message[]
 }
 
 model Message {
-  id          String       @id @default(cuid())
-  createdAt   DateTime     @default(now())
-  body        String       @db.Text
+  id             String   @id @default(cuid())
+  conversationId String
+  clientId       String?  /// Lié au client qui a envoyé le message
+  content        String   @db.Text
+  senderName     String   @db.VarChar(255)
+  senderId       String   /// Peut être un clientId ou un userId
+  attachments    Json?
+  timestamp      DateTime @default(now())
 
-  projectId   String
-  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
-  senderId    String
-  sender      User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
-
-  attachments Attachment[]
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  client         Client?      @relation(fields: [clientId], references: [id], onDelete: SetNull)
 }
 
-model Attachment {
-  id          String    @id @default(cuid())
-  createdAt   DateTime  @default(now())
-  filename    String
-  url         String
+model Project {
+  id          String   @id @default(cuid())
+  proposalId  String?  @unique /// Lié à la proposition initiale
+  clientId    String   /// Chaque projet DOIT être lié à un client
+  name        String   @db.VarChar(255)
+  description String   @db.Text
+  status      String   @db.VarChar(50) /// planning, development, testing, deployment, completed
+  progress    Int
+  startDate   DateTime
+  endDate     DateTime
+  budget      Int      /// Budget total en centimes
+  spent       Int      /// Dépenses actuelles en centimes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  messageId   String
-  message     Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  proposal    Proposal? @relation(fields: [proposalId], references: [id])
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  clientId   String?
+  proposalId String?
+  contractId String?
+  invoiceId  String?
+  amount     Int      /// Montant en centimes
+  currency   String   @db.VarChar(3)
+  dueDate    DateTime
+  description String  @db.VarChar(255)
+  method     String   @db.VarChar(50)
+  status     String   @default("pending") @db.VarChar(50) /// pending, completed, failed
+  createdAt  DateTime @default(now())
+  
+  client     Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  invoice    Invoice? @relation(fields: [invoiceId], references: [id])
+}
+
+model Invoice {
+  id          String    @id @default(cuid())
+  clientId    String
+  contractId  String?
+  number      String    @unique @db.VarChar(50)
+  amount      Int       /// Montant en centimes
+  status      String    @default("draft") @db.VarChar(50) /// draft, sent, paid, overdue, void
+  issueDate   DateTime
+  dueDate     DateTime
+  items       Json      /// [{ description, quantity, unitPrice, total }]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  contract    Contract? @relation(fields: [contractId], references: [id])
+  payments    Payment[]
+}
+
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  subject   String?
+  message   String
+  createdAt DateTime @default(now())
 }

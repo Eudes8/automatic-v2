@@ -1,0 +1,79 @@
+{
+  "navbar": {
+    "dashboard": "Tableau de bord",
+    "messages": "Messages",
+    "files": "Fichiers",
+    "services": "Services",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Développez votre produit numérique plus vite",
+    "subtitle": "Nous concevons, développons et déployons des applications web et mobiles sur-mesure."
+  },
+  "services": {
+    "title": "Nos Services",
+    "description": "Conception, Développement, IA & Maintenance — des offres adaptées à chaque besoin."
+  },
+  "footer": {
+    "about": "À propos",
+    "privacy": "Politique de confidentialité",
+    "terms": "Mentions légales",
+    "copyright": "© AUTOMATIC. Tous droits réservés."
+  },
+  "footer_more": {
+    "description": "La référence incontournable du développement logiciel sur-mesure. Nous transformons vos idées en solutions digitales exceptionnelles.",
+    "newsletter_title": "Restez informé de nos dernières actualités",
+    "newsletter_description": "Abonnez-vous à notre newsletter pour recevoir nos derniers articles et annonces.",
+    "newsletter_placeholder": "Votre adresse email",
+    "newsletter_subscribe": "S'abonner"
+  },
+  "messages": {
+    "selectConversation": "Sélectionnez une conversation",
+    "chooseToStart": "Choisissez une conversation pour commencer à échanger avec l'équipe."
+  }
+  ,
+  "nav": {
+    "services": "Services",
+    "processus": "Processus",
+    "tarifs": "Tarifs",
+    "ressources": "Ressources",
+    "connexion": "Connexion",
+    "demarrer": "Démarrer un projet"
+  },
+  "services_list": {
+    "web": {
+      "title": "Applications Web",
+      "description": "Solutions web modernes et performantes"
+    },
+    "mobile": {
+      "title": "Applications Mobiles",
+      "description": "Applications iOS et Android natives"
+    },
+    "saas": {
+      "title": "Plateformes SaaS",
+      "description": "Solutions cloud évolutives"
+    },
+    "ai": {
+      "title": "Intelligence Artificielle",
+      "description": "Solutions IA sur mesure"
+    }
+  }
+  ,
+  "processus": {
+    "title": "Notre Processus",
+    "description": "Un déroulé clair et collaboratif pour transformer votre idée en produit livré."
+  },
+  "tarifs": {
+    "title": "Tarifs",
+    "description": "Plans et estimations pour accompagner les différents besoins et budgets.",
+    "tiers": {
+      "starter": { "title": "Starter", "price": "À partir de 5 000€" },
+      "business": { "title": "Business", "price": "À partir de 15 000€" },
+      "enterprise": { "title": "Enterprise", "price": "Sur devis" }
+    }
+  },
+  "ressources": {
+    "title": "Centre de Ressources",
+    "description": "Articles, guides et études de cas pour vous aider à concevoir et piloter vos projets." 
+  }
+}

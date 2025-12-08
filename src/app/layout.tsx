@@ -1,22 +1,38 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
-import AuthProvider from "@/components/AuthProvider";
-import Navbar from "@/components/Navbar";
+import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/theme-provider";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
+import { I18nProvider } from "@/lib/i18n";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "AUTOMATIC - Logiciels sur mesure",
-  description: "Votre partenaire pour la création de logiciels et applications.",
+  title: "AUTOMATIC - Développement Logiciel sur-Mesure",
+  description: "AUTOMATIC est la référence incontournable du développement logiciel sur-mesure, offrant une expérience client entièrement intégrée, transparente et d'une efficacité inégalée.",
+  keywords: ["AUTOMATIC", "développement logiciel", "sur-mesure", "applications web", "mobile", "SaaS", "IA", "React", "Next.js", "TypeScript"],
+  authors: [{ name: "Équipe AUTOMATIC" }],
+  icons: {
+    icon: "/logo.svg",
+  },
+  openGraph: {
+    title: "AUTOMATIC - Développement Logiciel sur-Mesure",
+    description: "La plateforme intégrée de services de développement logiciel. Configurer, estimer et lancer votre projet de manière autonome.",
+    url: "https://automatic.dev",
+    siteName: "AUTOMATIC",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AUTOMATIC - Développement Logiciel sur-Mesure",
+    description: "La plateforme intégrée de services de développement logiciel. Configurer, estimer et lancer votre projet de manière autonome.",
+  },
 };
 
 export default function RootLayout({
@@ -25,14 +41,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${outfit.variable} font-sans antialiased`}
       >
-        <AuthProvider>
-          <Navbar />
-          {children}
-        </AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <I18nProvider>
+            <div className="min-h-screen flex flex-col">
+              <Navbar />
+              <main className="flex-1 mt-20">{children}</main>
+              <Footer />
+            </div>
+          </I18nProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
